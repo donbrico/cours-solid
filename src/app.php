@@ -24,7 +24,7 @@ $routes = [
 ];
 
 // Récupération de la route actuelle et de la méthode HTTP actuelle
-$path = $_SERVER['PATH_INFO'] ?? '/';
+$path = $_SERVER['REQUEST_URI'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 try {
