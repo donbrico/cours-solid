@@ -1,3 +1,5 @@
 vendor/
 composer.lock
 phpdocker/data/mysql/db/
+.idea
+
