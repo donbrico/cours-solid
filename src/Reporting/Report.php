@@ -2,78 +2,34 @@
 
 namespace App\Reporting;
 
+use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
+
 class Report
 {
-    /**
-     * @var string
-     */
-    protected $date;
 
-    /**
-     * @var string
-     */
-    protected $title;
+    protected string $title;
+    protected string $date;
+    protected array $data;
 
-    /**
-     * @var array
-     */
-    protected $data;
-
-    /**
-     * Constructeur qui reçoit la date et le titre du rapport
-     *
-     * @param string $date
-     * @param string $title
-     */
+    #[Pure]
     public function __construct(string $date, string $title, array $data)
     {
-        $this->date  = $date;
         $this->title = $title;
+        $this->date  = $date;
         $this->data = $data;
-    }
-
-    /**
-     * Retourne le rapport formatté en HTML
-     *
-     * @return string
-     */
-    public function formatToHTML(): string
-    {
-        $data = "";
-
-        foreach ($this->data as $value) {
-            $data .= "<li>$value</li>";
-        }
-
-        return "
-            <h2>$this->title</h2>
-            <em>Date : $this->date</em>
-            <h4>Données : </h4>
-            <ul>
-                $data
-            </ul>
-        ";
-    }
-
-    /**
-     * Retourne le rapport formatté en JSON
-     *
-     * @return string
-     */
-    public function formatToJSON(): string
-    {
-        return json_encode($this->getContents());
     }
 
     /**
      * Retourne un tableau associatif contenant la date et le titre du rapport
      * Indice : tiens tiens, on pourrait donc récupérer ces données depuis l'extérieur ?
      */
-    public function getContents()
+    #[ArrayShape(['date' => "string", 'title' => "string", 'data' => "array"])]
+    public function getContents(): array
     {
         return [
-            'date'  => $this->date,
             'title' => $this->title,
+            'date'  => $this->date,
             'data' => $this->data
         ];
     }
