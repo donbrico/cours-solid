@@ -25,6 +25,7 @@
             <select name="format" id="format" class="form-control">
                 <option value="html">HTML</option>
                 <option value="json">JSON</option>
+                <option value="csv">CSV</option>
             </select>
         </div>
         <div class="form-group">
