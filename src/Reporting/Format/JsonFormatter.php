@@ -3,11 +3,12 @@
 namespace App\Reporting\Format;
 
 use App\Reporting\Report;
+use JsonException;
 
 class JsonFormatter
 {
 	/**
-	 * @throws \JsonException
+	 * @throws JsonException
 	 */
 	public function formatToJSON(Report $report): string
     {

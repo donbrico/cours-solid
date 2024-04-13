@@ -6,6 +6,7 @@ use App\Reporting\Format\CsvFormatter;
 use App\Reporting\Format\HtmlFormatter;
 use App\Reporting\Format\JsonFormatter;
 use App\Reporting\Report;
+use JsonException;
 use LogicException;
 
 class ReportCreatorController
@@ -15,7 +16,10 @@ class ReportCreatorController
         require_once(TEMPLATES_DIR . 'report-creator/show.html.php');
     }
 
-    public function execute(): void
+	/**
+	 * @throws JsonException
+	 */
+	public function execute(): void
     {
         // Extraction des données, on fait au plus simple / rapide mais ce serait à revoir
         $date = $_POST['date'];
