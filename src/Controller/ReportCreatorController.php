@@ -36,15 +36,15 @@ class ReportCreatorController
 
             case 'html':
                 $formatter = new HtmlFormatter();
-                $reportResult = $formatter->formatToHTML($report);
+                $reportResult = $formatter->format($report);
                 break;
             case 'json':
                 $formatter = new JsonFormatter();
-                $reportResult = $formatter->formatToJSON($report);
+                $reportResult = $formatter->format($report);
                 break;
             case 'csv':
                 $formatter = new CsvFormatter();
-                $reportResult = $formatter->formatToCsv($report);
+                $reportResult = $formatter->format($report);
                 break;
 
             default:

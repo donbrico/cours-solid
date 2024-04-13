@@ -5,10 +5,10 @@ namespace App\Reporting\Format;
 use App\Reporting\Report;
 use JetBrains\PhpStorm\Pure;
 
-class HtmlFormatter
+class HtmlFormatter implements FormatterInterface
 {
     #[Pure]
-    public function formatToHTML(Report $report): string
+    public function format(Report $report): string
     {
         $contents = $report->getContents();
         $data = "";
