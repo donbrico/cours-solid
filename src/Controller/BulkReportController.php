@@ -13,7 +13,10 @@ class BulkReportController
         require_once(TEMPLATES_DIR . 'bulk-report/show.html.php');
     }
 
-    public function execute(): void
+	/**
+	 * @throws \JsonException
+	 */
+	public function execute(): void
     {
         // Extraction des données, on fait au plus simple / rapide mais ce serait à revoir
         $date = $_POST['date'];
@@ -22,14 +25,11 @@ class BulkReportController
 
         // Début de l'algorithme
         $report = new Report($date, $title, $data);
-        $stringReport = new StringReport($date, $title, $data);
 
         $extractor = new ReportExtractor();
 
         $results = $extractor->process($report);
-        $results[] = [$stringReport->getStringReport()];
 
-
-        require_once(TEMPLATES_DIR . 'bulk-report/result.html.php');
+	    require_once(TEMPLATES_DIR . 'bulk-report/result.html.php');
     }
 }
