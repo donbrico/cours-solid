@@ -1,7 +1,7 @@
 ###############################################################################
 #                          Generated on phpdocker.io                          #
 ###############################################################################
-version: '3.1'
+version: '3.7'
 services:
     memcached:
         container_name: memcached
@@ -24,10 +24,10 @@ services:
         volumes:
             - '.:/application'
         environment:
-            - MYSQL_ROOT_PASSWORD=joy30012015
-            - MYSQL_DATABASE=carine
-            - MYSQL_USER=db_user
-            - MYSQL_PASSWORD=amandine
+            - MYSQL_ROOT_PASSWORD=${MY_DB_ROOT_PWD}
+            - MYSQL_DATABASE=${MY_DB_NAME}
+            - MYSQL_USER=${MY_DB_USER}
+            - MYSQL_PASSWORD=${MY_DB_PWD}
         ports:
             - '10002:3306'
 
