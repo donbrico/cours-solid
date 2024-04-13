@@ -6,6 +6,7 @@ use App\Reporting\Format\CsvFormatter;
 use App\Reporting\Format\HtmlFormatter;
 use App\Reporting\Format\JsonFormatter;
 use App\Reporting\Report;
+use App\Reporting\StringReport;
 use JsonException;
 use LogicException;
 
@@ -29,10 +30,11 @@ class ReportCreatorController
 
         // Début de l'algorithme
         $report = new Report($date, $title, $data);
+		$stringReport = new StringReport($date, $title, $data);
 
         switch ($format) {
-            case 'html':
 
+            case 'html':
                 $formatter = new HtmlFormatter();
                 $reportResult = $formatter->formatToHTML($report);
                 break;
@@ -44,10 +46,12 @@ class ReportCreatorController
                 $formatter = new CsvFormatter();
                 $reportResult = $formatter->formatToCsv($report);
                 break;
+
             default:
                 throw new LogicException('no format selected');
         }
-
+		$stringReportResult = $stringReport->getStringReport();
+	    $reportResult .= $stringReportResult;
 
         require_once(TEMPLATES_DIR . 'report-creator/result.html.php');
     }

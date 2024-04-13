@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Reporting\Report;
 use App\Reporting\ReportExtractor;
+use App\Reporting\StringReport;
 
 class BulkReportController
 {
@@ -21,10 +22,13 @@ class BulkReportController
 
         // Début de l'algorithme
         $report = new Report($date, $title, $data);
+        $stringReport = new StringReport($date, $title, $data);
 
         $extractor = new ReportExtractor();
 
         $results = $extractor->process($report);
+        $results[] = [$stringReport->getStringReport()];
+
 
         require_once(TEMPLATES_DIR . 'bulk-report/result.html.php');
     }
