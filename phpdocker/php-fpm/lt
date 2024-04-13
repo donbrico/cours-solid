@@ -1,6 +1,0 @@
-if test  $1
-then
-    ls --color -al -k $1* |more
-else
-    ls --color -alt -k| more
-fi

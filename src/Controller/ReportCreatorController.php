@@ -6,15 +6,16 @@ use App\Reporting\Format\CsvFormatter;
 use App\Reporting\Format\HtmlFormatter;
 use App\Reporting\Format\JsonFormatter;
 use App\Reporting\Report;
+use LogicException;
 
 class ReportCreatorController
 {
-    public function show()
+    public function show(): void
     {
         require_once(TEMPLATES_DIR . 'report-creator/show.html.php');
     }
 
-    public function execute()
+    public function execute(): void
     {
         // Extraction des données, on fait au plus simple / rapide mais ce serait à revoir
         $date = $_POST['date'];
@@ -27,6 +28,7 @@ class ReportCreatorController
 
         switch ($format) {
             case 'html':
+
                 $formatter = new HtmlFormatter();
                 $reportResult = $formatter->formatToHTML($report);
                 break;
@@ -38,6 +40,8 @@ class ReportCreatorController
                 $formatter = new CsvFormatter();
                 $reportResult = $formatter->formatToCsv($report);
                 break;
+            default:
+                throw new LogicException('no format selected');
         }
 
 
