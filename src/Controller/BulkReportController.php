@@ -24,7 +24,7 @@ class BulkReportController
 
         $extractor = new ReportExtractor();
 
-        $extractor->process($report);
+        $results = $extractor->process($report);
 
         require_once(TEMPLATES_DIR . 'bulk-report/result.html.php');
     }

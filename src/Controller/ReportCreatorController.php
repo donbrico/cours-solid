@@ -21,7 +21,7 @@ class ReportCreatorController
 	 */
 	public function execute(): void
     {
-        // Extraction des données, on fait au plus simple / rapide mais ce serait à revoir
+        // Extraction des données, on fait au plus simple / rapide, mais ce serait à revoir
         $date = $_POST['date'];
         $title = $_POST['title'];
         $data = $_POST['data'];
