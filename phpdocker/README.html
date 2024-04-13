@@ -29,18 +29,15 @@
 
 <h1>How to run</h1>
 
-<p>Dependencies:</p>
-
-<ul>
-<li>Docker engine v1.13 or higher. Your OS provided package might be a little old, if you encounter problems, do upgrade. See <a href="https://docs.docker.com/engine/installation">https://docs.docker.com/engine/installation</a></li>
-<li>Docker compose v1.12 or higher. See <a href="https://docs.docker.com/compose/install/">docs.docker.com/compose/install</a></li>
-</ul>
+<p>Dependencies:
+  * Docker. See <a href="https://docs.docker.com/engine/installation">https://docs.docker.com/engine/installation</a>
+  * Docker compose. See <a href="https://docs.docker.com/compose/install/">docs.docker.com/compose/install</a></p>
 
 <p>Once you're done, simply <code>cd</code> to your project and run <code>docker-compose up -d</code>. This will initialise and start all the containers, then leave them running in the background.</p>
 
 <h2>Services exposed outside your environment</h2>
 
-<p>You can access your application via <strong><code>localhost</code></strong>, if you're running the containers directly, or through <strong>``</strong> when run on a vm. nginx and mailhog both respond to any hostname, in case you want to add your own hostname on your <code>/etc/hosts</code></p>
+<p>You can access your application via <strong><code>localhost</code></strong>. Mailhog and nginx both respond to any hostname, in case you want to add your own hostname on your <code>/etc/hosts</code></p>
 
 <table>
 <thead>
@@ -52,15 +49,15 @@
 <tbody>
 <tr>
   <td>Webserver</td>
-  <td><a href="http://localhost:8000">localhost:8000</a></td>
+  <td><a href="http://localhost:10000">localhost:10000</a></td>
 </tr>
 <tr>
   <td>Mailhog web interface</td>
-  <td><a href="http://localhost:8001">localhost:8001</a></td>
+  <td><a href="http://localhost:10001">localhost:10001</a></td>
 </tr>
 <tr>
   <td>MySQL</td>
-  <td><strong>host:</strong> <code>localhost</code>; <strong>port:</strong> <code>8002</code></td>
+  <td><strong>host:</strong> <code>localhost</code>; <strong>port:</strong> <code>10002</code></td>
 </tr>
 </tbody>
 </table>
@@ -99,11 +96,6 @@
   <td>6379 (default)</td>
 </tr>
 <tr>
-  <td>ClickHouse</td>
-  <td>clickhouse</td>
-  <td>9000 (HTTP default)</td>
-</tr>
-<tr>
   <td>SMTP (Mailhog)</td>
   <td>mailhog</td>
   <td>1025 (default)</td>
@@ -117,15 +109,24 @@
 
 <ul>
 <li>Start containers in the background: <code>docker-compose up -d</code></li>
-<li>Start containers on the foreground: <code>docker-compose up</code>. You will see a stream of logs for every container running.</li>
+<li>Start containers on the foreground: <code>docker-compose up</code>. You will see a stream of logs for every container running. ctrl+c stops containers.</li>
 <li>Stop containers: <code>docker-compose stop</code></li>
 <li>Kill containers: <code>docker-compose kill</code></li>
-<li>View container logs: <code>docker-compose logs</code></li>
+<li>View container logs: <code>docker-compose logs</code> for all containers or <code>docker-compose logs SERVICE_NAME</code> for the logs of all containers in <code>SERVICE_NAME</code>.</li>
 <li>Execute command inside of container: <code>docker-compose exec SERVICE_NAME COMMAND</code> where <code>COMMAND</code> is whatever you want to run. Examples:
-    * Shell into the PHP container, <code>docker-compose exec php-fpm bash</code>
-    * Run symfony console, <code>docker-compose exec php-fpm bin/console</code>
-    * Open a mysql shell, <code>docker-compose exec mysql mysql -uroot -pCHOSEN_ROOT_PASSWORD</code></li>
+
+<ul>
+<li>Shell into the PHP container, <code>docker-compose exec php-fpm bash</code></li>
+<li>Run symfony console, <code>docker-compose exec php-fpm bin/console</code></li>
+<li>Open a mysql shell, <code>docker-compose exec mysql mysql -uroot -pCHOSEN_ROOT_PASSWORD</code></li>
+</ul></li>
 </ul>
+
+<h1>Application file permissions</h1>
+
+<p>As in all server environments, your application needs the correct file permissions to work properly. You can change the files throughout the container, so you won't care if the user exists or has the same ID on your host.</p>
+
+<p><code>docker-compose exec php-fpm chown -R www-data:www-data /application/public</code></p>
 
 <h1>Recommendations</h1>
 
@@ -134,6 +135,61 @@
 <ul>
 <li>Run composer outside of the php container, as doing so would install all your dependencies owned by <code>root</code> within your vendor folder.</li>
 <li>Run commands (ie Symfony's console, or Laravel's artisan) straight inside of your container. You can easily open a shell as described above and do your thing from there.</li>
+</ul>
+
+<h1>Simple basic Xdebug configuration with integration to PHPStorm</h1>
+
+<h2>Xdebug 2</h2>
+
+<p>To configure <strong>Xdebug 2</strong> you need add these lines in php-fpm/php-ini-overrides.ini:</p>
+
+<h3>For linux:</h3>
+
+<pre><code>xdebug.remote_enable = 1
+xdebug.remote_connect_back = 1
+xdebug.remote_autostart = 1
+</code></pre>
+
+<h3>For macOS and Windows:</h3>
+
+<pre><code>xdebug.remote_enable = 1
+xdebug.remote_host = host.docker.internal
+xdebug.remote_autostart = 1
+</code></pre>
+
+<h2>Xdebug 3</h2>
+
+<p>To configure <strong>Xdebug 3</strong> you need add these lines in php-fpm/php-ini-overrides.ini:</p>
+
+<h3>For linux:</h3>
+
+<pre><code>xdebug.mode = debug
+xdebug.remote_connect_back = true
+xdebug.start_with_request = yes
+</code></pre>
+
+<h3>For macOS and Windows:</h3>
+
+<pre><code>xdebug.mode = debug
+xdebug.remote_host = host.docker.internal
+xdebug.start_with_request = yes
+</code></pre>
+
+<h2>Add the section “environment” to the php-fpm service in docker-compose.yml:</h2>
+
+<pre><code>environment:
+  PHP_IDE_CONFIG: "serverName=Docker"
+</code></pre>
+
+<h3>Create a server configuration in PHPStorm:</h3>
+
+<ul>
+<li>In PHPStorm open Preferences | Languages &amp; Frameworks | PHP | Servers</li>
+<li>Add new server</li>
+<li>The “Name” field should be the same as the parameter “serverName” value in “environment” in docker-compose.yml (i.e. <em>Docker</em> in the example above)</li>
+<li>A value of the "port" field should be the same as first port(before a colon) in "webserver" service in docker-compose.yml</li>
+<li>Select "Use path mappings" and set mappings between a path to your project on a host system and the Docker container.</li>
+<li>Finally, add “Xdebug helper” extension in your browser, set breakpoints and start debugging</li>
 </ul>
     </div>
     <div class="pure-u-1-24"></div>

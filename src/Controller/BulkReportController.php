@@ -7,12 +7,12 @@ use App\Reporting\ReportExtractor;
 
 class BulkReportController
 {
-    public function show()
+    public function show(): void
     {
         require_once(TEMPLATES_DIR . 'bulk-report/show.html.php');
     }
 
-    public function execute()
+    public function execute(): void
     {
         // Extraction des données, on fait au plus simple / rapide mais ce serait à revoir
         $date = $_POST['date'];
@@ -24,7 +24,7 @@ class BulkReportController
 
         $extractor = new ReportExtractor();
 
-        $results = $extractor->process($report);
+        $extractor->process($report);
 
         require_once(TEMPLATES_DIR . 'bulk-report/result.html.php');
     }

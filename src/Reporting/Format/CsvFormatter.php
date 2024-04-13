@@ -7,7 +7,6 @@ use JetBrains\PhpStorm\Pure;
 
 class CsvFormatter
 {
-    #[Pure]
     public function formatToCsv(Report $report): string
     {
         $contents = $report->getContents();
