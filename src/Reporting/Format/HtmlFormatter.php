@@ -19,7 +19,7 @@ class HtmlFormatter implements FormatterInterface
 
         return "
             <h2>{$contents['title']}</h2>
-            <em>Date : {$contents['title']}</em>
+            <em>Date : {$contents['date']}</em>
             <h4>Données : </h4>
             <ul>
                 $data

@@ -9,13 +9,14 @@ require_once('../vendor/autoload.php');
 
 // Définitions de chemins utiles dans l'application
 const TEMPLATES_DIR = __DIR__.'/../templates/';
-//const SRC_DIR = __DIR__.'/';
-//const PUBLIC_DIR = __DIR__.'/../public/';
+
 
 /**
  * Ce tableau met en relation des routes avec des méthodes de controller
- * @var ReportCreatorController $controller
- * @var BulkReportController $controller
+ * @uses ReportCreatorController::show
+ * @uses ReportCreatorController::execute
+ * @uses BulkReportController::show
+ * @uses BulkReportController::execute
  */
 $routes = [
     '/report-creator' => [
