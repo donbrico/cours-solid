@@ -2,32 +2,59 @@
 
 namespace App\Reporting;
 
-use App\Reporting\Format\CsvFormatter;
-use App\Reporting\Format\HtmlFormatter;
-use App\Reporting\Format\HtmlSpecialFormatter;
-use App\Reporting\Format\JsonFormatter;
+use App\Reporting\Format\FormatterInterface;
+use JsonException;
 
 class ReportExtractor
 {
+	private string $title;
+	private string $date;
+	private array $data;
+	private array $formatters = [];
 
-    /**
-     * Doit afficher l'ensemble des formats possibles pour un rapport en se servant
-     * des formatters ajoutés dans le tableau
-     */
-    public function process(Report $report): array
+
+	public function addFormatters(FormatterInterface $formatter):void
+	{
+		$this->formatters[] = $formatter;
+	}
+
+	/**
+	 * Doit afficher l'ensemble des formats possibles pour un rapport en se servant
+	 * des formatters ajoutés dans le tableau
+	 * @throws JsonException
+	 */
+    public function process(Report $report, bool $withStringReport = false): array
     {
         $results = [];
 
-        $htmlFormatter = new HtmlFormatter();
-        $htmlSpecialFormatter = new HtmlSpecialFormatter();
-        $jsonFormatter = new JsonFormatter();
-        $csvFormatter = new CsvFormatter();
+		//add the formatters to the results
+	    foreach ($this->formatters as $formatter) {
+	        $results[] = $formatter->format($report);
+	    }
 
-        $results[] = $htmlFormatter->formatToHTML($report);
-        $results[] = $htmlSpecialFormatter->formatToHTML($report);
-        $results[] = $jsonFormatter->formatToJSON($report);
-        $results[] = $csvFormatter->formatToCsv($report);
+		if ($withStringReport) {
+			$results[] = $this->addStringReports($report);
+		}
 
         return $results;
     }
+
+	private function setStringReportsParams(Report $report): void
+	{
+		$this->title = $report->getContents()['title'];
+		$this->date = $report->getContents()['date'];
+		$this->data = $report->getContents()['data'];
+	}
+
+	private function addStringReports(Report $report): array
+	{
+		$results = [];
+		//set the params for the StringReport
+		$this->setStringReportsParams($report);
+		$stringReport = new StringReport($this->title, $this->date, $this->data);
+
+		//Add the new StringReport to the results
+		$results[] = $stringReport->getStringReport();
+		return $results;
+	}
 }

@@ -1,16 +1,22 @@
 <?php
 
-// Autoloading, pas besoin de require partout pour charger nos classes et chargement
+// Auto loading, pas besoin de require partout pour charger nos classes et chargement
 // automatique de nos librairies
+use App\Controller\BulkReportController;
+use App\Controller\ReportCreatorController;
+
 require_once('../vendor/autoload.php');
 
 // Définitions de chemins utiles dans l'application
-define('TEMPLATES_DIR', __DIR__ . '/../templates/');
-define('SRC_DIR', __DIR__ . '/');
-define('PUBLIC_DIR', __DIR__ . '/../public/');
+const TEMPLATES_DIR = __DIR__.'/../templates/';
+
 
 /**
  * Ce tableau met en relation des routes avec des méthodes de controller
+ * @uses ReportCreatorController::show
+ * @uses ReportCreatorController::execute
+ * @uses BulkReportController::show
+ * @uses BulkReportController::execute
  */
 $routes = [
     '/report-creator' => [
@@ -30,7 +36,8 @@ $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 try {
     // Si la route actuelle n'existe pas dans le tableau des routes
     if (!array_key_exists($path, $routes)) {
-        throw new Exception("La page correspondant à l'URL `$path` n'existe pas, corrigez le tableau des routes ou l'URL dans votre barre d'adresse");
+        throw new RuntimeException("La page correspondant à l'URL `$path` n'existe pas, corrigez le tableau des 
+        routes ou l'URL dans votre barre d'adresse");
     }
 
     // Sinon, on récupère les informations du tableau des routes
@@ -39,7 +46,7 @@ try {
 
     // Si la classe demandée n'existe pas
     if (!class_exists($className)) {
-        throw new Exception("La classe <strong>$className</strong> n'existe pas et ne peut donc pas répondre à cette route ! Vous devriez construire cette classe ou alors corriger vos routes !");
+        throw new RuntimeException("La classe <strong>$className</strong> n'existe pas et ne peut donc pas répondre à cette route ! Vous devriez construire cette classe ou alors corriger vos routes !");
     }
 
     // On instancie la classe concernée
@@ -47,11 +54,11 @@ try {
 
     // Si la méthode n'existe pas
     if (!method_exists($controller, $methodName)) {
-        throw new Exception("La classe <strong>$className</strong> n'a aucune méthode <strong>$methodName</strong> ! Vous devriez créer cette méthode ou corriger vos routes !");
+        throw new RuntimeException("La classe <strong>$className</strong> n'a aucune méthode <strong>$methodName</strong> ! Vous devriez créer cette méthode ou corriger vos routes !");
     }
 
     // On appelle la méthode sur l'instance du controller
-    call_user_func([$controller, $methodName]);
+    $controller->$methodName();
 } catch (Exception $e) {
     $errorMessage = $e->getMessage();
     require_once(TEMPLATES_DIR . "error.html.php");
