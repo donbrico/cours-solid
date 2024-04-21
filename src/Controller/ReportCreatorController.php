@@ -2,14 +2,10 @@
 
 namespace App\Controller;
 
-use App\Reporting\Format\CsvFormatter;
-use App\Reporting\Format\HtmlFormatter;
-use App\Reporting\Format\JsonFormatter;
 use App\Reporting\FormatterFactory;
 use App\Reporting\Report;
 use App\Reporting\StringReport;
 use JsonException;
-use LogicException;
 
 class ReportCreatorController
 {
