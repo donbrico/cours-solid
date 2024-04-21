@@ -3,7 +3,6 @@
 namespace App\Reporting;
 
 use App\Reporting\Format\FormatterInterface;
-use LogicException;
 
 class FormatterFactory
 {
