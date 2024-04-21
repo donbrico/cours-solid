@@ -2,13 +2,10 @@
 
 namespace App\Controller;
 
-use App\Reporting\Format\CsvFormatter;
-use App\Reporting\Format\HtmlFormatter;
-use App\Reporting\Format\JsonFormatter;
+use App\Reporting\FormatterFactory;
 use App\Reporting\Report;
 use App\Reporting\StringReport;
 use JsonException;
-use LogicException;
 
 class ReportCreatorController
 {
@@ -32,24 +29,13 @@ class ReportCreatorController
         $report = new Report($date, $title, $data);
 		$stringReport = new StringReport($date, $title, $data);
 
-        switch ($format) {
+		// On utilise la factory pour créer le bon formateur
+	    // Afin de respecter au maximum le principe SOLID
+	    // Ce n'est pas au controller de choisir le formateur
+	    // En fonction du format, on pourrait imaginer que la factory retourne un formateur différent
+		$formatter = FormatterFactory::create($format);
+		$reportResult = $formatter->format($report);
 
-            case 'html':
-                $formatter = new HtmlFormatter();
-                $reportResult = $formatter->format($report);
-                break;
-            case 'json':
-                $formatter = new JsonFormatter();
-                $reportResult = $formatter->format($report);
-                break;
-            case 'csv':
-                $formatter = new CsvFormatter();
-                $reportResult = $formatter->format($report);
-                break;
-
-            default:
-                throw new LogicException('no format selected');
-        }
 		$stringReportResult = $stringReport->getStringReport();
 	    $reportResult .= $stringReportResult;
 
