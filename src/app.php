@@ -4,12 +4,12 @@
 // automatique de nos librairies
 use App\Controller\BulkReportController;
 use App\Controller\ReportCreatorController;
+use App\Controller\PooController;
 
 require_once('../vendor/autoload.php');
 
 // Définitions de chemins utiles dans l'application
 const TEMPLATES_DIR = __DIR__.'/../templates/';
-
 
 /**
  * Ce tableau met en relation des routes avec des méthodes de controller
@@ -17,6 +17,7 @@ const TEMPLATES_DIR = __DIR__.'/../templates/';
  * @uses ReportCreatorController::execute
  * @uses BulkReportController::show
  * @uses BulkReportController::execute
+ * @uses PooController::show
  */
 $routes = [
     '/report-creator' => [
@@ -26,7 +27,10 @@ $routes = [
     '/bulk-report' => [
         'GET' => 'App\Controller\BulkReportController@show',
         'POST' => 'App\Controller\BulkReportController@execute'
-    ]
+    ],
+	'/poo-home' => [
+		'GET' => 'App\Controller\PooController@show',
+	]
 ];
 
 // Récupération de la route actuelle et de la méthode HTTP actuelle

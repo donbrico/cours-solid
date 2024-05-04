@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Report Builder</title>
+    <title>Report Builder | POO Lessons</title>
     <link rel="stylesheet" href="https://bootswatch.com/4/lumen/bootstrap.min.css">
 </head>
 
@@ -23,6 +23,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/bulk-report">Rapport en masse</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/poo-home" class="nav-link">POO en PHP</a>
                 </li>
             </ul>
         </div>
