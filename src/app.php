@@ -9,7 +9,7 @@ use App\Controller\PooController;
 require_once('../vendor/autoload.php');
 
 // Définitions de chemins utiles dans l'application
-const TEMPLATES_DIR = __DIR__.'/../templates/';
+const TEMPLATES_DIR = __DIR__ . '/../templates/';
 
 /**
  * Ce tableau met en relation des routes avec des méthodes de controller

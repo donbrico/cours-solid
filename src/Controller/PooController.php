@@ -8,5 +8,4 @@ class PooController
 	{
 		require_once(TEMPLATES_DIR . 'poo/display.html.php');
 	}
-
 }
