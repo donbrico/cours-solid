@@ -2,8 +2,6 @@
 
 namespace App\Poo;
 
-use App\Poo\Person;
-
 class Pilot extends Person
 {
 	private int $rate;
@@ -12,25 +10,6 @@ class Pilot extends Person
 	{
 		parent::__construct($name, $firstname, $email, $age);
 		$this->setRate($rate);
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getRate(): int
-	{
-		return $this->rate;
-	}
-
-	/**
-	 * @param  int  $rate
-	 *
-	 * @return Pilot
-	 */
-	public function setRate(int $rate): self
-	{
-		$this->rate = $rate;
-		return $this;
 	}
 
 	public function commitmentLevel(): string
@@ -50,5 +29,24 @@ class Pilot extends Person
 		return sprintf(
 			'%s a une implication normale en raison de sa note de %d', $this->getName(), $this->getRate()
 		);
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getRate(): int
+	{
+		return $this->rate;
+	}
+
+	/**
+	 * @param  int  $rate
+	 *
+	 * @return Pilot
+	 */
+	public function setRate(int $rate): self
+	{
+		$this->rate = $rate;
+		return $this;
 	}
 }
