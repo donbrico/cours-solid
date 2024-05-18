@@ -41,7 +41,7 @@ $route = $_SERVER['REQUEST_URI'] ?? '/';
     </nav>
 
     <div class="container pt-3">
-        <?php require_once("../src/app.php") ?>
+        <?php require_once "../src/app.php" ?>
     </div>
 </body>
 
