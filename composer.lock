@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9f1e57e46e15bbd211e1a60945c4a96",
+    "content-hash": "21f35e4b603f7bfd266b0e81666ede73",
     "packages": [
+        {
+            "name": "heroku/heroku-buildpack-php",
+            "version": "v249",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/heroku/heroku-buildpack-php.git",
+                "reference": "79b2d9e8f9ea5df5a3df7d3cd977664e54068ebd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/heroku/heroku-buildpack-php/zipball/79b2d9e8f9ea5df5a3df7d3cd977664e54068ebd",
+                "reference": "79b2d9e8f9ea5df5a3df7d3cd977664e54068ebd",
+                "shasum": ""
+            },
+            "bin": [
+                "bin/heroku-php-apache2",
+                "bin/heroku-php-nginx"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Zuelke",
+                    "email": "dz@heroku.com"
+                }
+            ],
+            "description": "Toolkit for starting a PHP application locally, with or without foreman, using the same config for PHP and Apache2/Nginx as on Heroku",
+            "homepage": "https://github.com/heroku/heroku-buildpack-php",
+            "keywords": [
+                "apache",
+                "apache2",
+                "foreman",
+                "heroku",
+                "nginx",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/heroku/heroku-buildpack-php/issues",
+                "source": "https://github.com/heroku/heroku-buildpack-php/tree/v249"
+            },
+            "time": "2024-04-12T17:45:29+00:00"
+        },
         {
             "name": "symfony/polyfill-mbstring",
             "version": "v1.29.0",
