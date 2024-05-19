@@ -1,6 +1,6 @@
 {
   "require": {
-    "php": ">=8.*",
+    "php": "^7.4",
     "symfony/var-dumper": "^4.3",
     "heroku/heroku-buildpack-php": "^249.0"
   }
