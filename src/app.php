@@ -11,6 +11,20 @@ require_once('../vendor/autoload.php');
 // Définitions de chemins utiles dans l'application
 const TEMPLATES_DIR = __DIR__ . '/../templates/';
 
+const DOMAIN_WHITELIST = [
+	'cours-solid.herokuapp.com',
+];
+
+$domain = 'cours-solid.herokuapp.com';
+$config['site_url'] = 'https://'. $domain . '/index.php';
+
+if (!in_array($config['site_url'], DOMAIN_WHITELIST)) {
+	throw new RuntimeException('This domain is not allowed for use this application');
+}
+
+$host = $config['site_url'];
+
+
 /**
  * Ce tableau met en relation des routes avec des méthodes de controller
  * @uses ReportCreatorController::show
@@ -35,13 +49,10 @@ $routes = [
 
 // Récupération de la route actuelle et de la méthode HTTP actuelle
 //$path = $_SERVER['REQUEST_URI'] ?? '/';
-dd($_SERVER);
+//dd($_SERVER);
 //die('exit');
 
-$path = $_SERVER['HTTP_HOST'];
-if (!isset($_SERVER['HTTP_HOST'])) {
-	$path = $_SERVER['REQUEST_URI'] ?? '/';
-}
+$path = $host;
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 try {
