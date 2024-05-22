@@ -35,7 +35,7 @@ $routes = [
 
 // Récupération de la route actuelle et de la méthode HTTP actuelle
 //$path = $_SERVER['REQUEST_URI'] ?? '/';
-//dd($_SERVER);
+dd($_SERVER);
 //die('exit');
 
 $path = $_SERVER['HTTP_HOST'];
