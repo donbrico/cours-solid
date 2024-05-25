@@ -11,18 +11,27 @@ require_once('../vendor/autoload.php');
 // Définitions de chemins utiles dans l'application
 const TEMPLATES_DIR = __DIR__ . '/../templates/';
 
-const DOMAIN_WHITELIST = [
-	'cours-solid.herokuapp.com',
-];
+//const DOMAIN_WHITELIST = [
+//	'cours-solid.herokuapp.com',
+//];
 
-$domain = 'cours-solid.herokuapp.com';
-$config['site_url'] = 'https://'. $domain . '/index.php';
-
-if (!in_array($config['site_url'], DOMAIN_WHITELIST)) {
-	throw new RuntimeException('This domain is not allowed for use this application');
+//dd($_SERVER);
+if ($_SERVER['HTTP_HOST'] === 'localhost:81') {
+	$path = $_SERVER['REQUEST_URI'] ?? '/';
+	$domain = 'localhost:81';
+	$config['site_url'] = 'http://'. $domain;
+} else {
+	$path = $_SERVER['REQUEST_URI'] ?? '/';
+	$domain = 'cours-solid.herokuapp.com';
+	$config['site_url'] = 'https://'. $domain;
 }
 
-$host = $config['site_url'];
+//if (!in_array($config['site_url'], DOMAIN_WHITELIST)) {
+////	throw new RuntimeException('This domain is not allowed for use this application');
+//	print('inside');
+//}
+
+//$host = $config['site_url'];
 
 
 /**
@@ -52,7 +61,7 @@ $routes = [
 //dd($_SERVER);
 //die('exit');
 
-$path = $host;
+//$path = $config['site_url'];
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 try {
