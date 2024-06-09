@@ -1,64 +1,43 @@
-# PHP CircleCI 2.0 configuration file
-# See: https://circleci.com/docs/2.0/language-php/
-version: 2
+version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   build:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
-      # Specify the version you desire here
-      - image: circleci/php:7.1-node-browsers
+      - image: phpdockerio/php:8.2-fpm
+    steps:
+      - run:
+          name: Install System Packages
+          command: apt-get update && apt-get -y install git unzip zlib1g-dev
+      - run:
+          name: Install PHP Extensions
+          command: docker-php-ext-install pdo pdo_mysql zip
+      - run:
+          name: Install Composer
+          command: |
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+#            php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+            php composer-setup.php && \
+            php -r "unlink('composer-setup.php');" && \
+            chmod +x ./composer.phar && \
+            mv ./composer.phar /usr/local/bin/composer
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # Using the RAM variation mitigates I/O contention
-      # for database intensive operations.
-      # - image: circleci/mysql:5.7-ram
-      #
-      # - image: redis:2.8.19
-
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    executor:
+  deploy:
+    docker:
+      - image:  phpdockerio/php:8.2-fpm
     steps:
       - checkout
+      - run:
+          name: Deploy Main to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git main
 
-      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
-      - run: sudo docker-php-ext-install zip
-
-#      # Download and cache dependencies
-#      - restore_cache:
-#          keys:
-#            # "composer.lock" can be used if it is committed to the repo
-#            - v1-dependencies-{{ checksum "composer.json" }}
-#            # fallback to using the latest cache if no exact match is found
-#            - v1-dependencies-
-#
-#      - run: composer install -n --prefer-dist
-#
-#      - save_cache:
-#          key: v1-dependencies-{{ checksum "composer.json" }}
-#          paths:
-#            - ./vendor
-#      - restore_cache:
-#          keys:
-#            - node-v1-{{ checksum "package.json" }}
-#            - node-v1-
-#      - run: yarn install
-#      - save_cache:
-#          key: node-v1-{{ checksum "package.json" }}
-#          paths:
-#            - node_modules
-
-#      # prepare the database
-#      - run: touch storage/testing.sqlite
-#      - run: php artisan migrate --env=testing --database=sqlite_testing --force
-#
-#      # run tests with phpunit or codecept
-#      #- run: ./vendor/bin/phpunit
-#      - run: ./vendor/bin/codecept build
-#      - run: ./vendor/bin/codecept run
+workflows:
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build # only run deploy-via-git job if the build job has completed
+          filters:
+            branches:
+              only: main # only run deploy-via-git job on main branch

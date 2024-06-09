@@ -3,3 +3,5 @@ composer.lock
 phpdocker/data/mysql/db/
 .idea
 
+
+.env.local
