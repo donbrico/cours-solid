@@ -7,21 +7,16 @@ jobs:
       - run:
           name: Install System Packages
           command: apt-get update && apt-get -y install git unzip zlib1g-dev
-      - run:
-          name: Install PHP Extensions
-          command: docker-php-ext-install pdo pdo_mysql zip
+#      - run:
+#          name: Install PHP Extensions
+#          command: docker-php-ext-install pdo pdo_mysql zip
       - run:
           name: Install Composer
           command: >
-            php -r "copy('https://getcomposer.org/installer',
-            'composer-setup.php');" && 
-
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && 
             php composer-setup.php && 
-
             php -r "unlink('composer-setup.php');" &&
-
             chmod +x ./composer.phar && 
-
             mv ./composer.phar /usr/local/bin/composer
   deploy:
     docker:
@@ -30,10 +25,7 @@ jobs:
       - checkout
       - run:
           name: Deploy Main to Heroku
-          command: >
-            git push
-            https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
-            main
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git main
 workflows:
   build-deploy:
     jobs:
