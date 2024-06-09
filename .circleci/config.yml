@@ -35,11 +35,11 @@ jobs:
             sudo docker-php-ext-configure gd --with-freetype --with-jpeg
             sudo docker-php-ext-install gd pdo pdo_mysql
 
-      - run:
-          name: Install Symfony CLI
-          command: |
-            wget https://get.symfony.com/cli/installer -O - | bash
-            mv ~/.symfony*/bin/symfony /usr/local/bin/symfony
+#      - run:
+#          name: Install Symfony CLI
+#          command: |
+#            wget https://get.symfony.com/cli/installer -O - | bash
+#            mv ~/.symfony*/bin/symfony /usr/local/bin/symfony
 
       - run:
           name: Install project dependencies
