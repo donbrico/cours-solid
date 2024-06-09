@@ -4,11 +4,34 @@
 // automatique de nos librairies
 use App\Controller\BulkReportController;
 use App\Controller\ReportCreatorController;
+use App\Controller\PooController;
 
 require_once('../vendor/autoload.php');
 
 // Définitions de chemins utiles dans l'application
-const TEMPLATES_DIR = __DIR__.'/../templates/';
+const TEMPLATES_DIR = __DIR__ . '/../templates/';
+
+//const DOMAIN_WHITELIST = [
+//	'cours-solid.herokuapp.com',
+//];
+
+//dd($_SERVER);
+if ($_SERVER['HTTP_HOST'] === 'localhost:81') {
+	$path = $_SERVER['REQUEST_URI'] ?? '/';
+	$domain = 'localhost:81';
+	$config['site_url'] = 'http://'. $domain;
+} else {
+	$path = $_SERVER['REQUEST_URI'] ?? '/';
+	$domain = 'cours-solid.herokuapp.com';
+	$config['site_url'] = 'https://'. $domain;
+}
+
+//if (!in_array($config['site_url'], DOMAIN_WHITELIST)) {
+////	throw new RuntimeException('This domain is not allowed for use this application');
+//	print('inside');
+//}
+
+//$host = $config['site_url'];
 
 
 /**
@@ -17,6 +40,7 @@ const TEMPLATES_DIR = __DIR__.'/../templates/';
  * @uses ReportCreatorController::execute
  * @uses BulkReportController::show
  * @uses BulkReportController::execute
+ * @uses PooController::show
  */
 $routes = [
     '/report-creator' => [
@@ -26,11 +50,18 @@ $routes = [
     '/bulk-report' => [
         'GET' => 'App\Controller\BulkReportController@show',
         'POST' => 'App\Controller\BulkReportController@execute'
-    ]
+    ],
+	'/poo-home' => [
+		'GET' => 'App\Controller\PooController@show',
+	]
 ];
 
 // Récupération de la route actuelle et de la méthode HTTP actuelle
-$path = $_SERVER['REQUEST_URI'] ?? '/';
+//$path = $_SERVER['REQUEST_URI'] ?? '/';
+//dd($_SERVER);
+//die('exit');
+
+//$path = $config['site_url'];
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 try {

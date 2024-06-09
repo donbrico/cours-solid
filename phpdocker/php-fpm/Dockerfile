@@ -3,7 +3,7 @@ WORKDIR "/application"
 
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
-        git \ 
+        git gcc curl\
         php7.4-memcached \ 
         php7.4-mysql \ 
         php7.4-redis \ 
@@ -11,3 +11,5 @@ RUN apt-get update; \
         php7.4-yaml; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+RUN curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
