@@ -1,9 +1,8 @@
 version: 2.1
-
 jobs:
   build:
     docker:
-      - image: phpdockerio/php:8.2-fpm
+      - image: 'phpdockerio/php:8.2-fpm'
     steps:
       - run:
           name: Install System Packages
@@ -13,31 +12,35 @@ jobs:
           command: docker-php-ext-install pdo pdo_mysql zip
       - run:
           name: Install Composer
-          command: |
-            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-#            php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
-            php composer-setup.php && \
-            php -r "unlink('composer-setup.php');" && \
-            chmod +x ./composer.phar && \
-            mv ./composer.phar /usr/local/bin/composer
+          command: >
+            php -r "copy('https://getcomposer.org/installer',
+            'composer-setup.php');" && 
 
+            php composer-setup.php && 
+
+            php -r "unlink('composer-setup.php');" &&
+
+            chmod +x ./composer.phar && 
+
+            mv ./composer.phar /usr/local/bin/composer
   deploy:
     docker:
-      - image:  phpdockerio/php:8.2-fpm
+      - image: 'phpdockerio/php:8.2-fpm'
     steps:
       - checkout
       - run:
           name: Deploy Main to Heroku
-          command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git main
-
+          command: >
+            git push
+            https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
+            main
 workflows:
   build-deploy:
     jobs:
       - build
       - deploy:
           requires:
-            - build # only run deploy-via-git job if the build job has completed
+            - build
           filters:
             branches:
-              only: main # only run deploy-via-git job on main branch
+              only: main
