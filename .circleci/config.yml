@@ -3,84 +3,76 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/php:7.4-cli
-        environment:
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_DATABASE: symfony_test
-          MYSQL_USER: root
-          MYSQL_PASSWORD: ''
-
-      - image: circleci/mysql:5.7
-        environment:
-          MYSQL_ROOT_PASSWORD: ''
+      - image: circleci/php:8.1-node-browsers
+    environment:
+      MYSQL_DB: symfony_test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      APP_ENV: test
 
     steps:
       - checkout
 
       - run:
-          name: Update and install dependencies
+          name: Install PHP extensions
           command: |
-            sudo apt-get update
-            sudo apt-get install -y git unzip libpng-dev libjpeg-dev libfreetype6-dev
+            sudo docker-php-ext-install pdo pdo_mysql
 
       - run:
-          name: Install Composer
-          command: |
-            curl -sS https://getcomposer.org/installer | php
-            sudo mv composer.phar /usr/local/bin/composer
+          name: Install Composer dependencies
+          command: composer install --prefer-dist --no-interaction --no-progress --no-suggest
 
       - run:
-          name: Install PHP Extensions
+          name: Wait for MySQL to be ready
           command: |
-            sudo docker-php-ext-configure gd --with-freetype --with-jpeg
-            sudo docker-php-ext-install gd pdo pdo_mysql
-
-#      - run:
-#          name: Install Symfony CLI
-#          command: |
-#            wget https://get.symfony.com/cli/installer -O - | bash
-#            mv ~/.symfony*/bin/symfony /usr/local/bin/symfony
+            dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
 
       - run:
-          name: Install project dependencies
-          command: composer install --no-interaction --prefer-dist --optimize-autoloader
+          name: Create database
+          command: |
+            echo 'CREATE DATABASE symfony_test;' | mysql -u root --password=root
 
       - run:
-          name: Create .env.local
-          command: |
-            cp .env .env.local
-            echo "DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE}" >> .env.local
-
-      - run:
-          name: Set up the database
-          command: |
-            php bin/console doctrine:database:create --env=test
-            php bin/console doctrine:schema:create --env=test
+          name: Run database migrations
+          command: php bin/console doctrine:migrations:migrate --no-interaction
 
       - run:
           name: Run tests
-          command: ./vendor/bin/phpunit
-
-
+          command: php bin/phpunit
 
   deploy:
     docker:
-      - image: 'phpdockerio/php:8.2-fpm'
+      - image: circleci/php:8.1-node-browsers
     steps:
       - checkout
-      - run:
-          name: Deploy Main to Heroku
-          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git main
 
+      - run:
+          name: Install Heroku CLI
+          command: |
+            curl https://cli-assets.heroku.com/install.sh | sh
+
+      - run:
+          name: Authenticate with Heroku
+          command: |
+            echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
+
+      - run:
+          name: Build and push Docker image to Heroku
+          command: |
+            heroku container:login
+            heroku container:push web --app cours-solid
+
+      - run:
+          name: Release the new version
+          command: heroku container:release web --app cours-solid
 
 workflows:
   version: 2
-  build_and_test:
+  build_and_deploy:
     jobs:
       - build
       - deploy:
           requires:
             - build
-          filters:
-            branches:
-              only: master
+
